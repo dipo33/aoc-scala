@@ -1,0 +1,14 @@
+target/
+project/target/
+project/project/
+.bsp/
+.bloop/
+.metals/
+metals.sbt
+.idea/
+
+# holds the real AOC_SESSION cookie, never commit it
+.envrc
+
+# Real AoC puzzle inputs — AoC's ToS forbids redistribution, this repo is public.
+y*/src/main/resources/day*/input.txt
