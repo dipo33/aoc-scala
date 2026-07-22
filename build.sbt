@@ -6,12 +6,12 @@ ThisBuild / scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked")
 
 lazy val commonSettings = Seq(
   libraryDependencies += "org.scalameta" %% "munit" % "1.0.4" % Test,
-  testFrameworks += new TestFramework("munit.Framework")
+  testFrameworks += new TestFramework("munit.Framework"),
 )
 
-lazy val core = project.in(file("core")).settings(commonSettings*)
+lazy val core = project.in(file("core")).settings(commonSettings *)
 
-lazy val y2024 = project.in(file("y2024")).dependsOn(core).settings(commonSettings*)
+lazy val y2024 = project.in(file("y2024")).dependsOn(core).settings(commonSettings *)
 
 // Single source of truth: year -> its sbt Project. Adding a new year means:
 //   1. add a `lazy val y20XX = ...` above (dependsOn(core), commonSettings)
@@ -29,14 +29,18 @@ lazy val root = project
   .aggregate(core, y2024)
   .settings(
     name := "aoc",
-    publish / skip := true
+    publish / skip := true,
   )
 
-lazy val downloadInput = inputKey[Unit]("downloadInput <year> <day> [--force] - fetch & cache real puzzle input")
-lazy val newDay        = inputKey[Unit]("newDay <year> <day> - scaffold Solution.scala + SolutionSpec.scala")
-lazy val runDay        = inputKey[Unit]("runDay <year> <day> - run a day's Solution, print part1/part2")
-lazy val bench         = inputKey[Unit]("bench <year> <day> [warmup] [iters] - lightweight benchmark")
-lazy val testDay       = inputKey[Unit]("testDay <year> <day> [word...] - run a day's tests, optionally narrowed to tests whose name contains every given word")
+lazy val downloadInput =
+  inputKey[Unit]("downloadInput <year> <day> [--force] - fetch & cache real puzzle input")
+lazy val newDay =
+  inputKey[Unit]("newDay <year> <day> - scaffold Solution.scala + SolutionSpec.scala")
+lazy val runDay = inputKey[Unit]("runDay <year> <day> - run a day's Solution, print part1/part2")
+lazy val bench = inputKey[Unit]("bench <year> <day> [warmup] [iters] - lightweight benchmark")
+lazy val testDay = inputKey[Unit](
+  "testDay <year> <day> [word...] - run a day's tests, optionally narrowed to tests whose name contains every given word"
+)
 
 downloadInput := Def.inputTask {
   val args = spaceDelimited("<arg>").parsed
@@ -73,7 +77,9 @@ def classpathTaskFor(year: Int): Def.Initialize[Task[Seq[File]]] =
     case None =>
       Def.task {
         val knownYears = yearProjects.keySet.toSeq.sorted.mkString(", ")
-        sys.error(s"No sbt module for year $year. Known years: $knownYears. Add it to build.sbt (see README).")
+        sys.error(
+          s"No sbt module for year $year. Known years: $knownYears. Add it to build.sbt (see README)."
+        )
       }
   }
 
@@ -84,6 +90,8 @@ def testOnlyTaskFor(year: Int, day: Int, words: Seq[String]): Def.Initialize[Tas
     case None =>
       Def.task {
         val knownYears = yearProjects.keySet.toSeq.sorted.mkString(", ")
-        sys.error(s"No sbt module for year $year. Known years: $knownYears. Add it to build.sbt (see README).")
+        sys.error(
+          s"No sbt module for year $year. Known years: $knownYears. Add it to build.sbt (see README)."
+        )
       }
   }

@@ -22,7 +22,13 @@ object AocTasks {
   def classLoaderFor(classpath: Seq[File]): URLClassLoader =
     new URLClassLoader(classpath.map(_.toURI.toURL).toArray, null)
 
-  def invokePart(loader: ClassLoader, year: Int, day: Int, methodName: String, input: String): AnyRef = {
+  def invokePart(
+    loader: ClassLoader,
+    year: Int,
+    day: Int,
+    methodName: String,
+    input: String,
+  ): AnyRef = {
     val cls = Class.forName(solutionClassName(year, day), true, loader)
     val method = cls.getMethod(methodName, classOf[String])
     method.invoke(null, input)
@@ -49,7 +55,7 @@ object AocTasks {
 
   def parseYearDay(args: Seq[String]): (Int, Int) = args match {
     case Seq(y, d, _*) => (parseIntOrDie(y, "year"), parseIntOrDie(d, "day"))
-    case _              => die("usage: <task> <year> <day>")
+    case _             => die("usage: <task> <year> <day>")
   }
 
   def parseBenchArgs(args: Seq[String]): (Int, Int, Int, Int) = {
@@ -103,7 +109,13 @@ object AocTasks {
     }
   }
 
-  private def printPart(loader: ClassLoader, year: Int, day: Int, part: String, input: String): Unit =
+  private def printPart(
+    loader: ClassLoader,
+    year: Int,
+    day: Int,
+    part: String,
+    input: String,
+  ): Unit =
     try {
       val result = invokePart(loader, year, day, part, input)
       println(s"$part = $result")
@@ -137,7 +149,15 @@ object AocTasks {
     (System.nanoTime() - t0) / 1e6
   }
 
-  private def benchPart(loader: ClassLoader, year: Int, day: Int, part: String, input: String, warmup: Int, iters: Int): Unit =
+  private def benchPart(
+    loader: ClassLoader,
+    year: Int,
+    day: Int,
+    part: String,
+    input: String,
+    warmup: Int,
+    iters: Int,
+  ): Unit =
     try {
       (1 to warmup).foreach(_ => invokePart(loader, year, day, part, input))
       val samples = (1 to iters).map(_ => timeMs(invokePart(loader, year, day, part, input))).sorted
@@ -239,7 +259,9 @@ object AocTasks {
 
     sys.env.get("AOC_SESSION") match {
       case None =>
-        die("AOC_SESSION env var is not set. Copy the `session` cookie value from adventofcode.com into .envrc (see .envrc.example) and run `direnv allow`.")
+        die(
+          "AOC_SESSION env var is not set. Copy the `session` cookie value from adventofcode.com into .envrc (see .envrc.example) and run `direnv allow`."
+        )
       case Some(session) =>
         val request = HttpRequest.newBuilder()
           .uri(URI.create(s"https://adventofcode.com/$year/day/$day/input"))
@@ -252,7 +274,9 @@ object AocTasks {
 
         response.statusCode() match {
           case 200 if looksLikeErrorBody(response.body()) =>
-            die("Got HTTP 200 but the body looks like a login/error page, not puzzle input - AOC_SESSION is likely expired.")
+            die(
+              "Got HTTP 200 but the body looks like a login/error page, not puzzle input - AOC_SESSION is likely expired."
+            )
           case 200 =>
             Files.createDirectories(dest.getParent)
             Files.writeString(dest, response.body())
@@ -260,7 +284,9 @@ object AocTasks {
           case 302 | 301 =>
             die("Redirected (likely to /auth/login) - AOC_SESSION is missing or expired.")
           case 400 | 401 =>
-            die(s"HTTP ${response.statusCode()} - AOC_SESSION is missing or invalid. Body: ${response.body().take(200)}")
+            die(
+              s"HTTP ${response.statusCode()} - AOC_SESSION is missing or invalid. Body: ${response.body().take(200)}"
+            )
           case 404 =>
             die(s"HTTP 404 - day $day of year $year isn't available yet (or doesn't exist).")
           case other =>
