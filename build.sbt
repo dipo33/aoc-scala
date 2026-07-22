@@ -36,6 +36,7 @@ lazy val downloadInput = inputKey[Unit]("downloadInput <year> <day> [--force] - 
 lazy val newDay        = inputKey[Unit]("newDay <year> <day> - scaffold Solution.scala + SolutionSpec.scala")
 lazy val runDay        = inputKey[Unit]("runDay <year> <day> - run a day's Solution, print part1/part2")
 lazy val bench         = inputKey[Unit]("bench <year> <day> [warmup] [iters] - lightweight benchmark")
+lazy val testDay       = inputKey[Unit]("testDay <year> <day> [word...] - run a day's tests, optionally narrowed to tests whose name contains every given word")
 
 downloadInput := Def.inputTask {
   val args = spaceDelimited("<arg>").parsed
@@ -59,10 +60,27 @@ bench := Def.inputTaskDyn {
   classpathTaskFor(year).map(cp => AocTasks.bench(cp, year, day, warmup, iters))
 }.evaluated
 
+testDay := Def.inputTaskDyn {
+  val args = spaceDelimited("<arg>").parsed
+  val (year, day) = AocTasks.parseYearDay(args)
+  testOnlyTaskFor(year, day, args.drop(2))
+}.evaluated
+
 def classpathTaskFor(year: Int): Def.Initialize[Task[Seq[File]]] =
   yearProjects.get(year) match {
     case Some(p) =>
       (p / Compile / fullClasspath).map(_.files)
+    case None =>
+      Def.task {
+        val knownYears = yearProjects.keySet.toSeq.sorted.mkString(", ")
+        sys.error(s"No sbt module for year $year. Known years: $knownYears. Add it to build.sbt (see README).")
+      }
+  }
+
+def testOnlyTaskFor(year: Int, day: Int, words: Seq[String]): Def.Initialize[Task[Unit]] =
+  yearProjects.get(year) match {
+    case Some(p) =>
+      (p / Test / testOnly).toTask(AocTasks.testOnlyArgs(year, day, words))
     case None =>
       Def.task {
         val knownYears = yearProjects.keySet.toSeq.sorted.mkString(", ")

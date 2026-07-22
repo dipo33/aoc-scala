@@ -61,6 +61,21 @@ This is deliberately manual rather than a generated task — it happens once a
 year, and programmatically rewriting `build.sbt` for it was judged not worth
 the fragility.
 
+## Running tests
+
+- `sbt test` — every test, in every module.
+- `sbt "y2024/test"` — every test, in just that year's module.
+- `sbt "testDay 2024 5"` — every test in day 5's `SolutionSpec` only.
+- `sbt "testDay 2024 5 part1"` — narrowed further to tests whose name contains
+  `part1` (so both "part1 example" and "part1 real input").
+- `sbt "testDay 2024 5 part1 real"` — narrowed to the one test whose name
+  contains both words: "part1 real input".
+
+`testDay` exists because munit's own name filter (`testOnly ... -- --tests=<regex>`)
+needs a regex and gets awkward to quote correctly from a shell once the test name
+has spaces in it (as in `"part1 example"`). `testDay` takes plain words instead —
+any order, any number of them — and builds that regex for you.
+
 ## Tasks
 
 - `newDay <year> <day>` — scaffold a day, refuses to overwrite existing files
@@ -69,4 +84,6 @@ the fragility.
 - `runDay <year> <day>` — run a day's `Solution` against its real input
 - `bench <year> <day> [warmup] [iters]` — min/median timing for `part1`/`part2`
   (defaults: 5 warmup, 20 timed iterations)
+- `testDay <year> <day> [word...]` — run a day's tests, optionally narrowed to
+  tests whose name contains every given word (see "Running tests" above)
 - `compile` / `test` — the usual sbt tasks, work as normal across every module

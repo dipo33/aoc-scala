@@ -64,6 +64,22 @@ object AocTasks {
     s"No sbt module for year $year. Known years: ${knownYears.toSeq.sorted.mkString(", ")}. " +
       s"Add it to build.sbt first (see README)."
 
+  // ---------------- testDay ----------------
+
+  // Builds the extra args string for `<project> / Test / testOnly`: the day's
+  // SolutionSpec, plus (if words are given) a munit `--tests=` regex requiring
+  // every word to appear somewhere in the test name, in any order - so
+  // `testDay 2024 1 part1 real` narrows down to the single "part1 real input" test
+  // without the caller needing to know munit's filter syntax or fight shell quoting.
+  def testOnlyArgs(year: Int, day: Int, words: Seq[String]): String = {
+    val className = s"y$year.day${pad(day)}.SolutionSpec"
+    if (words.isEmpty) s" $className"
+    else {
+      val lookaheads = words.map(w => s"(?=.*${java.util.regex.Pattern.quote(w)})").mkString
+      s" $className -- --tests=$lookaheads.*"
+    }
+  }
+
   private def ensureClassAvailable(loader: ClassLoader, year: Int, day: Int): Unit =
     try Class.forName(solutionClassName(year, day), false, loader)
     catch {
