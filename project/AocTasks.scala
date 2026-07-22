@@ -181,7 +181,7 @@ object AocTasks {
        |
        |class SolutionSpec extends munit.FunSuite:
        |
-       |  val example =
+       |  val example: String =
        |    \"\"\"|
        |       |\"\"\".stripMargin.trim
        |
