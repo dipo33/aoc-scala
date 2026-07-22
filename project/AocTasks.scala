@@ -185,17 +185,21 @@ object AocTasks {
        |    \"\"\"|
        |       |\"\"\".stripMargin.trim
        |
-       |  test("part1 example") {
-       |    assertEquals(Solution.part1(example), ???)
-       |  }
+       |//  test("part1 example") {
+       |//    assertEquals(Solution.part1(example), ???)
+       |//  }
        |
-       |  // Paste part 2's example (sometimes different from part 1's) once it unlocks:
-       |  //   test("part2 example") { assertEquals(Solution.part2(example), ???) }
-       |  //
-       |  // Once you know a real answer, lock it in against the real (gitignored) input:
-       |  //   test("part1 real input") {
-       |  //     assertEquals(Solution.part1(aoc.core.InputLoader.load($year, ${dd.toInt})), ???)
-       |  //   }
+       |//  test("part2 example") {
+       |//    assertEquals(Solution.part2(example), ???)
+       |//  }
+       |
+       |//  test("part1 real input") {
+       |//    assertEquals(Solution.part1(aoc.core.InputLoader.load($year, ${dd.toInt})), ???)
+       |//  }
+       |
+       |//  test("part2 real input") {
+       |//    assertEquals(Solution.part2(aoc.core.InputLoader.load($year, ${dd.toInt})), ???)
+       |//  }
        |""".stripMargin
 
   // ---------------- downloadInput ----------------
