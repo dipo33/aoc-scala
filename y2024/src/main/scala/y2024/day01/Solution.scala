@@ -9,13 +9,12 @@ object Solution extends Day[Long, Long]:
       case Array(left, right) => (left, right)
     }.toList.unzip
 
-  def part1(input: String): Long = {
+  def part1(input: String): Long =
     val (leftList, rightList) = parse(input)
     leftList.sorted
       .zip(rightList.sorted)
       .map((left, right) => (left - right).abs)
       .sum
-  }
 
   def part2(input: String): Long =
     val (leftList, rightList) = parse(input)
