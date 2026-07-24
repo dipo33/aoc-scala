@@ -6,6 +6,7 @@ ThisBuild / scalacOptions ++= Seq("-deprecation", "-feature", "-unchecked")
 
 lazy val commonSettings = Seq(
   libraryDependencies += "org.scalameta" %% "munit" % "1.0.4" % Test,
+  libraryDependencies += "com.lihaoyi" %% "fastparse" % "3.1.1",
   testFrameworks += new TestFramework("munit.Framework"),
 )
 
